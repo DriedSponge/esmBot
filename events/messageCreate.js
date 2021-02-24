@@ -4,7 +4,8 @@ const database = require("../utils/database.js");
 const logger = require("../utils/logger.js");
 const collections = require("../utils/collections.js");
 const commands = [...collections.aliases.keys(), ...collections.commands.keys()];
-
+const axios = require("axios");
+const FormData = require("form-data")
 // run when someone sends a message
 module.exports = async (message) => {
   // ignore dms and other bots
@@ -76,19 +77,35 @@ module.exports = async (message) => {
       if (result.file.length > 8388119 && process.env.TEMPDIR !== "") {
         const filename = `${Math.random().toString(36).substring(2, 15)}.${result.name.split(".")[1]}`;
         await fs.promises.writeFile(`${process.env.TEMPDIR}/${filename}`, result.file);
-        await client.createMessage(message.channel.id, {
-          embed: {
-            color: 16711680,
-            title: "Here's your image!",
-            url: `https://projectlounge.pw/tmp/${filename}`,
-            image: {
-              url: `https://projectlounge.pw/tmp/${filename}`
-            },
-            footer: {
-              text: "The result image was more than 8MB in size, so it was uploaded to an external site instead."
-            },
+        const form = new FormData();
+        form.append("image",fs.createReadStream(`${process.env.TEMPDIR}/${filename}`))
+        await axios.post(process.env.EXTERNALSERVERENDPOINT,form,
+            {
+              headers: {"Authorization":`Bearer ${process.env.EXTERNALSERVERTOKEN}`,'Content-Type': 'multipart/form-data;boundary=' + form.getBoundary()},
+              'maxContentLength': Infinity,
+              'maxBodyLength': Infinity,
+            }).then(res =>{
+            console.log(res.data)
+            console.log("test")
+            client.createMessage(message.channel.id, {
+            embed: {
+              color: 16711680,
+              title: "Here's your image!",
+              url: res.data.url,
+              image: {
+                url: res.data.raw_url
+              },
+              footer: {
+                text: "The result image was more than 8MB in size, so it was uploaded to an external site instead. The image will not expire!"
+              },
+            }
+          });
+        }).catch(error => {
+          console.log(error);
+          if (error.response) {
+            console.log(error.response.status + "err")
           }
-        });
+        })
       } else {
         await client.createMessage(message.channel.id, result.text ? result.text : "", result);
       }
