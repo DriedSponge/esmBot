@@ -76,9 +76,9 @@ module.exports = async (message) => {
     } else if (typeof result === "object" && result.file) {
       if (result.file.length > 8388119 && process.env.TEMPDIR !== "") {
         const filename = `${Math.random().toString(36).substring(2, 15)}.${result.name.split(".")[1]}`;
-        await fs.promises.writeFile(`${process.env.TEMPDIR}/${filename}`, result.file);
         const form = new FormData();
-        form.append("image",fs.createReadStream(`${process.env.TEMPDIR}/${filename}`))
+        result.file.name = filename
+        form.append("image",result.file)
         await axios.post(process.env.EXTERNALSERVERENDPOINT,form,
             {
               headers: {"Authorization":`Bearer ${process.env.EXTERNALSERVERTOKEN}`,'Content-Type': 'multipart/form-data;boundary=' + form.getBoundary()},
