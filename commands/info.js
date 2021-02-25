@@ -4,10 +4,10 @@ const { version } = require("../package.json");
 exports.run = async () => {
   const infoEmbed = {
     "embed": {
-      "description": process.env.NODE_ENV === "development" ? "**You are currently using esmBot Dev! Things may change at any time without warning and there will be bugs. Many bugs.**" : "",
+      "description": "This bot is a modification of the open source **esmBot**.",
       "color": 16711680,
       "author": {
-        "name": "esmBot Info/Credits",
+        "name": "Chica Bot Info/Credits",
         "icon_url": client.user.avatarURL
       },
       "fields": [{
@@ -16,23 +16,15 @@ exports.run = async () => {
       },
       {
         "name": "📝 Credits:",
-        "value": "Bot by **[Essem](https://essem.space)** and **[various contributors](https://github.com/esmBot/esmBot/graphs/contributors)**\nIcon by **[MintBorrow](https://mintborrow.newgrounds.com)**"
+        "value": "Original bot by **[Essem](https://essem.space)** and **[various contributors](https://github.com/esmBot/esmBot/graphs/contributors)**\nIcon by **[MintBorrow](https://mintborrow.newgrounds.com)**"
       },
       {
         "name": "💬 Total Servers:",
         "value": client.guilds.size
       },
       {
-        "name": "✅ Official Server:",
-        "value": "[Click here!](https://projectlounge.pw/support)"
-      },
-      {
         "name": "💻 Source Code:",
-        "value": "[Click here!](https://github.com/esmBot/esmBot)"
-      },
-      {
-        "name": "🐦 Twitter:",
-        "value": "[Click here!](https://twitter.com/esmBot_)"
+        "value": "[Click here!](https://github.com/DriedSponge/esmBot)"
       }
       ]
     }
