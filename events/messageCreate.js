@@ -89,9 +89,9 @@ module.exports = async (message) => {
             console.log("test")
             client.createMessage(message.channel.id, {
             embed: {
-              color: 16711680,
+              color: 0x007BFF,
               title: "Here's your image!",
-              url: res.data.url,
+              url: res.data.raw_url,
               image: {
                 url: res.data.raw_url
               },
@@ -101,10 +101,21 @@ module.exports = async (message) => {
             }
           });
         }).catch(error => {
-          console.log(error);
-          if (error.response) {
-            console.log(error.response.status + "err")
+          var errmsg ="";
+          if(error.response){
+            errmsg = error.response.status+" "+error.response.statusText;
+          }else if(error.request){
+            errmsg = error.request
+          }else{
+            errmsg = error.message
           }
+          client.createMessage(message.channel.id, {
+            embed: {
+              color: 16711680,
+              title: `There was an error uploading your image!`,
+              description: "The image you applied the effect to was too large to upload to discord, so we tried to upload it to our own server. The upload to our own server failed so please try again later. \n```\n"+errmsg+"\n```"
+            }
+          });
         })
       } else {
         await client.createMessage(message.channel.id, result.text ? result.text : "", result);
