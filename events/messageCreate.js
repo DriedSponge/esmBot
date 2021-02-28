@@ -85,21 +85,22 @@ module.exports = async (message) => {
               'maxContentLength': Infinity,
               'maxBodyLength': Infinity,
             }).then(res =>{
-            console.log(res.data)
-            console.log("test")
-            client.createMessage(message.channel.id, {
-            embed: {
-              color: 0x007BFF,
-              title: "Here's your image!",
-              url: res.data.raw_url,
-              image: {
-                url: res.data.raw_url
-              },
-              footer: {
-                text: "The result image was more than 8MB in size, so it was uploaded to an external site instead. The image will not expire!"
-              },
-            }
-          });
+            // This may seem useless, but I want to make sure cloudflare caches the image, before it gets served to discord, so discord can cache it
+              axios.get(res.data.raw_url).then(response=>{
+                client.createMessage(message.channel.id, {
+                  embed: {
+                    color: 0x007BFF,
+                    title: "Here's your image!",
+                    url: res.data.raw_url,
+                    image: {
+                      url: res.data.raw_url
+                    },
+                    footer: {
+                      text: "The result image was more than 8MB in size, so it was uploaded to an external site instead. The image will not expire!"
+                    },
+                  }
+                });
+              })
         }).catch(error => {
           var errmsg ="";
           if(error.response){
