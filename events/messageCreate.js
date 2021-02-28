@@ -92,6 +92,7 @@ module.exports = async (message) => {
                     color: 0x007BFF,
                     title: "Here's your image!",
                     url: res.data.raw_url,
+                    description:"If discord is being a baby and not loading the gif, just copy and paste this url: "+res.data.raw_url,
                     image: {
                       url: res.data.raw_url
                     },
