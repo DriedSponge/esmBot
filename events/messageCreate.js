@@ -72,7 +72,9 @@ module.exports = async (message) => {
     await database.addCount(collections.aliases.has(command) ? collections.aliases.get(command) : command);
     const result = await cmd(message, args, content.replace(command, "").trim()); // we also provide the message content as a parameter for cases where we need more accuracy
     if (typeof result === "string" || (typeof result === "object" && result.embed)) {
+
       await client.createMessage(message.channel.id, result);
+
     } else if (typeof result === "object" && result.file) {
       if (result.file.length > 8388119 && process.env.TEMPDIR !== "") {
         const filename = `${Math.random().toString(36).substring(2, 15)}.${result.name.split(".")[1]}`;
@@ -120,7 +122,11 @@ module.exports = async (message) => {
           });
         })
       } else {
-        await client.createMessage(message.channel.id, result.text ? result.text : "", result);
+        await axios.get("https://www.breakingbadapi.com/api/quote/random",{withCredentials: false}).then(res=>{
+          this.quote =
+          this.author = res.data[0].author
+          client.createMessage(message.channel.id, result.text ? result.text : `*"${res.data[0].quote}"* - ${ res.data[0].author}`, result)
+        })
       }
     }
   } catch (error) {
