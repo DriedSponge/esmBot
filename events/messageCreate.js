@@ -125,7 +125,7 @@ module.exports = async (message) => {
         await axios.get("https://www.breakingbadapi.com/api/quote/random",{withCredentials: false}).then(res=>{
           this.quote =
           this.author = res.data[0].author
-          client.createMessage(message.channel.id, result.text ? result.text : `*"${res.data[0].quote}"* - ${ res.data[0].author}`, result)
+          client.createMessage(message.channel.id, result.text ? result.text : `"${res.data[0].quote}" - ${ res.data[0].author}`, result)
         })
       }
     }
